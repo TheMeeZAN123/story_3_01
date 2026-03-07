@@ -75,8 +75,32 @@ Sunday, February 22, 2026
 ---
 
 ### Meeting – Mar 2, 2026
-_Content to be added._
 
+#### Attendance
+- Ali
+- Amelia
+- Hareem
+- Hassan
+- Mina
+
+---
+
+#### Key Takeaways
+- User stories should be added as Issues on GitHub
+- Discussed the project backlog on GitHub Projects, screenshots of the board are to be attached in README file
+- Can use Trello in addition to GitHub Board
+- Each week requires a designated Project Manager to oversee progress
+- TA explained wireframes and storyboards, these are to be created on Figma.
+---
+
+#### Action Items
+- [ ] Begin working on user stories
+- [ ] Add user stories as issues on Github Project Board
+- [ ] Start designing the app interface prototype: create wireframes and storyboards on Figma
+- [ ] Start working on project backlog, wireframes, and other deliverables of next phase
+- [ ] Assign Project Manager each week going forward
+---
+### Meeting – Mar 7, 2026 (intended)
 ---
 
 ## Object-Oriented Analysis (CRC Cards)
