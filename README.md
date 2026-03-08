@@ -10,6 +10,7 @@
 - [Meeting Minutes](#meeting-minutes)
   - [Meeting – Feb 22, 2026](#meeting--feb-22-2026)
   - [Meeting – Mar 2, 2026](#meeting--mar-2-2026)
+  - [Meeting – Mar 8, 2026](#meeting--mar-8-2026)
 
 - [Object-oriented analysis (CRC cards)](#object-oriented-analysis-crc-cards)
 
@@ -76,6 +77,9 @@ Sunday, February 22, 2026
 
 ### Meeting – Mar 2, 2026
 
+#### Date
+Sunday, March 2, 2026
+
 #### Attendance
 - Ali
 - Amelia
@@ -100,7 +104,29 @@ Sunday, February 22, 2026
 - [ ] Start working on project backlog, wireframes, and other deliverables of next phase
 - [ ] Assign Project Manager each week going forward
 ---
-### Meeting – Mar 7, 2026 (intended)
+### Meeting – Mar 8, 2026 
+
+#### Date
+Sunday, March 8, 2026
+
+#### Attendance
+- Ali
+- Amelia
+- Hareem
+- Hassan
+- Mina
+---
+#### Key Takeaways
+- Presented Figma design to TA, went over progress made so far
+- Resolved query about half-way checkpoint – not set in stone, can be changed later
+- For wireframe and storyboard, not necessary to include entire storyboard flow in one screenshot, can upload flows in multiple screenshots
+- Clarified confusion about user stories on how to judge and assign story points: Fibonacci sequence, lookup at example user stories for other apps and judge based on those
+---
+#### Action Items
+- [ ] Do CRC cards
+- [ ] Add Issues on Github Project
+- [ ] Review example user stories from other apps to calibrate story point estimation
+- [ ] Finalize all deliverables for upcoming deadline
 ---
 
 ## Object-Oriented Analysis (CRC Cards)
