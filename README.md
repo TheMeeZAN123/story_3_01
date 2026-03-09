@@ -137,8 +137,8 @@ _to be added._
 ## Product Backlog
 
 ### Product Backlog – Project Part 1
-| ID | User Story | Story Points | Risk Level |
-|----|------------|----------|--------|
+|  ID  | User Story | Story Points | Risk Level |
+|------|------------|--------------|------------|
 |1-01| As a student, I want to create an account using an email and password, so that I can access the counseling appointment system | 2 | LOW |
 |1-02| As a student I should be able to reset my password, so that I can regain access to my account in case I forget my password | 2 | LOW |
 |1-03| As a student, I want to use my email and password to log in, so that I can access the system and book and manage appointments | 1 | LOW |
