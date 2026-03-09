@@ -184,7 +184,6 @@ _to be added._
 |6-02| As the admin, I want the system to automatically mark a no-show slot as available and trigger the waitlist mechanism, so that the slot is filled as needed | 3 | HIGH |
 |6-03| As the admin, i want the system to automatically update the no-show on a students profile, so that they can be flagged if needed | 2 | MEDIUM |
 |6-04| As an admin, I want to view all flagged students with more than two no-shows, so that I can reach out and offer support | 2 | LOW |
-
 |7-01| As a student, I want to fill out a pre-session intake form once my appointment is confirmed and any time before my appointment, so that I can provide the counselor with relevant details before our session | 2 | MEDIUM |
 |7-02| As a student, I want to state my reason for visit, current concerns, and urgency level in the pre-session intake form, so that my counselor is aware of my situation and prepared for the appointment | 2 | LOW |
 |7-03| As a counselor, I want to view a student’s completed intake form before our session so that I can prepare for the session as needed | 2 | LOW |
