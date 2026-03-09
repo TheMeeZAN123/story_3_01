@@ -137,8 +137,19 @@ _to be added._
 ## Product Backlog
 
 ### Product Backlog – Project Part 1
-| ID | User Story | Priority | Status |
+| ID | User Story | Story Points | Risk Level |
 |----|------------|----------|--------|
+|1-01| As a student, I want to create an account using an email and password, so that I can access the counseling appointment system | 2 | LOW |
+|1-02| As a student I should be able to reset my password, so that I can regain access to my account in case I forget my password | 2 | LOW |
+|1-03| As a student, I want to use my email and password to log in, so that I can access the system and book and manage appointments | 1 | LOW |
+|1-04| As a student, I should get an error message if I enter incorrect login credentials, so that I can know that login was unsuccessful | 1 | LOW |
+|1-05| As a student, I want to log out of my account, so that my information stays secure | 1 | LOW |
+|1-06| As a counselor, I want to login (using credentials provided by admin), so that I can access and manage my appointments and availability | 1 | LOW |
+|1-07| As a counselor, I should be able to log out of my account, so that students information remains confidential | 1 | LOW |
+|1-08| As a counselor, I want to change my password, so that I am the only one with access to my account | 2 | LOW |
+|1-09| As an admin, I want to log in using my credentials, so that I can manage counselors and supervise the system | 1 | LOW |
+|1-10| As an admin, I should be able to log out, so that system remains protected and all information remains confidential | 1 | LOW |
+||  |  |  |
 
 #### Backlog & Project Board Screenshots
 
