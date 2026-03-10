@@ -122,7 +122,7 @@ Sunday, March 8, 2026
 #### Action Items
 - [ ] Do CRC cards
 - [ ] Add Issues on Github Project
-- [ ] Review example user stories from other apps to calibrate story point estimation
+- [ ] Review example user stories from other apps for story point estimation
 - [ ] Finalize all deliverables for upcoming deadline
 ---
 
