@@ -3,6 +3,7 @@
 ## Links
 - GitHub Project: https://github.com/orgs/CS360S26hamham/projects 
 - Wireframe and Storyboard (Figma): (link)
+- CRC cards (figma): (link)
 
 ## Table of Contents
 - [Team Information](#team-information)
@@ -16,13 +17,9 @@
 
 - [Product Backlog](#product-backlog)
   - [Product Backlog – Project Part 1](#product-backlog--project-part-1)
-  - [Product Backlog – Project Part 2](#product-backlog--project-part-2)
-  - [Product Backlog – Project Part 3](#product-backlog--project-part-3)
 
 - [Wireframes](#wireframes)
   - [Wireframes – Project Part 1](#wireframes--project-part-1)
-  - [Wireframes – Project Part 2](#wireframes--project-part-2)
-  - [Wireframes – Project Part 3](#wireframes--project-part-3)
 
 ---
 
@@ -199,15 +196,6 @@ _to be added._
 
 #### Backlog & Project Board Screenshots
 
-### Product Backlog – Project Part 2
-| ID | User Story | Priority | Status |
-|----|------------|----------|--------|
-_will be added later._
-
-### Product Backlog – Project Part 3
-| ID | User Story | Priority | Status |
-|----|------------|----------|--------|
-_will be added later._
 
 ---
 
@@ -216,8 +204,3 @@ _will be added later._
 ### Wireframes – Project Part 1
 _Add screenshots or links to wireframe images._
 
-### Wireframes – Project Part 2
-_Add screenshots or links to wireframe images._
-
-### Wireframes – Project Part 3
-_Add screenshots or links to wireframe images._
