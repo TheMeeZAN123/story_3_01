@@ -176,7 +176,7 @@ Sunday, March 8, 2026
 |5-05| As a counselor, I want to receive a notification when a student cancels or reschedules, so that i am aware of any changes to my schedule | 2 | MEDIUM |
 |5-06| As a counselor, I want to receive a notification when a student is marked as a no-show, so that I know my slot is free | 2 | MEDIUM |
 |5-07| As a counselor, I want to receive a notification when a waitlisted student has been assigned a slot, so that I am aware of the change to my schedule | 2 | MEDIUM |
-|6-01| As the admin, i want the system to record a no-show against a student’s profile when they do not confirm by 10 minutes before the appointment, so that no-shows are tracked | 3 | MEDIUM |
+|6-01| As the admin, I want the system to record a no-show against a student’s profile when they do not confirm by 10 minutes before the appointment, so that no-shows are tracked | 3 | MEDIUM |
 |6-02| As the admin, I want the system to automatically mark a no-show slot as available and trigger the waitlist mechanism, so that the slot is filled as needed | 3 | HIGH |
 |6-03| As the admin, i want the system to automatically update the no-show on a students profile, so that they can be flagged if needed | 2 | MEDIUM |
 |6-04| As an admin, I want to view all flagged students with more than two no-shows, so that I can reach out and offer support | 2 | LOW |
@@ -189,8 +189,8 @@ Sunday, March 8, 2026
 |8-01| As a student, I want to view my own profile, so that i can see my personal information and counseling history in one place | 2 | LOW |
 |8-02| As a student, I want to edit my information so that my profile remains up-to-date | 2 | LOW |
 |8-03| As a student, I want to view my appointment history, so that i can keep track of my previous and upcoming sessions | 2 | LOW |
-|8-04| As a counselor, I want to view a students profile, so that i am aware of their history and any previous sessions 2 | 2 | LOW |
-|8-05| As a student, I want that only my counselor can view my profile apart from me, so that my information remains confidentia | 5 | HIGH |
+|8-04| As a counselor, I want to view a students profile, so that i am aware of their history and any previous sessions | 2 | LOW |
+|8-05| As a student, I want that only my counselor can view my profile apart from me, so that my information remains confidential | 5 | HIGH |
 
 
 #### Backlog & Project Board Screenshots
