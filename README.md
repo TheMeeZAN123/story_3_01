@@ -3,7 +3,7 @@
 ## Links
 - GitHub Project: https://github.com/orgs/CS360S26hamham/projects 
 - Wireframe and Storyboard (Figma): (link)
-- CRC cards (figma): (link)
+- CRC cards (figma): [(link)](https://github.com/orgs/CS360S26hamham/projects/1?pane=issue&itemId=163893206)
 
 ## Table of Contents
 - [Team Information](#team-information)
