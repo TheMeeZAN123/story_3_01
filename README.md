@@ -194,7 +194,7 @@ Sunday, March 8, 2026
 
 
 #### Backlog & Project Board Screenshots
-![Project Board](./project_board.PNG)
+![Backlog Project Board](./backlog_project_board.PNG)
 
 ---
 
