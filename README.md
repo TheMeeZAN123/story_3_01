@@ -128,7 +128,7 @@ Sunday, March 8, 2026
 
 ## Object-Oriented Analysis (CRC Cards)
 _to be added._
-
+![CRC Cards](./CRC_Cards.png)
 ---
 
 ## Product Backlog
