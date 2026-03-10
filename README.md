@@ -201,5 +201,18 @@ Sunday, March 8, 2026
 ## Wireframes
 
 ### Wireframes – Project Part 1
-_Add screenshots or links to wireframe images._
+
+<img width="372" height="761" alt="Screenshot 2026-03-07 214613" src="https://github.com/user-attachments/assets/e34830a8-1819-4a7d-93fb-8a3b95f65536" />
+<img width="290" height="671" alt="Screenshot 2026-03-10 153148" src="https://github.com/user-attachments/assets/ea005408-e16c-4fc3-bc59-26d1890513f2" />
+<img width="292" height="659" alt="Screenshot 2026-03-10 153210" src="https://github.com/user-attachments/assets/eafa02e0-238c-453a-ab3a-4787577ab53b" />
+<img width="286" height="675" alt="Screenshot 2026-03-10 153221" src="https://github.com/user-attachments/assets/5a681db4-d455-40d9-9aa9-914db28b394c" />
+
+<img width="1919" height="873" alt="Screenshot 2026-03-10 152804" src="https://github.com/user-attachments/assets/9a7e6efa-b901-44cb-9783-e3d406df10ee" />
+<img width="919" height="853" alt="Screenshot 2026-03-10 152907" src="https://github.com/user-attachments/assets/d32db9d7-0cca-48bb-8eb7-db22f167e49b" />
+<img width="1919" height="872" alt="Screenshot 2026-03-10 152939" src="https://github.com/user-attachments/assets/774c5b11-6078-4c84-a750-83b8fcee49f6" />
+<img width="1919" height="867" alt="Screenshot 2026-03-10 152959" src="https://github.com/user-attachments/assets/1ea865a0-f62a-4911-979a-18d080065b80" />
+
+Figma Link:
+https://lace-read-52420261.figma.site/
+
 
