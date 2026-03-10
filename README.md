@@ -2,7 +2,7 @@
 
 ## Links
 - GitHub Project: https://github.com/orgs/CS360S26hamham/projects 
-- Wireframe and Storyboard (Figma): (link)
+- Wireframe and Storyboard (Figma): https://lace-read-52420261.figma.site/
 - CRC cards (figma): https://www.figma.com/board/g9txbSDITWebkJNwpFEj66/CRC-Card-Template--Community-?node-id=2002-36&t=9o0i3vmOXPunRpi3-1
 
 ## Table of Contents
@@ -212,7 +212,5 @@ Sunday, March 8, 2026
 <img width="1919" height="872" alt="Screenshot 2026-03-10 152939" src="https://github.com/user-attachments/assets/774c5b11-6078-4c84-a750-83b8fcee49f6" />
 <img width="1919" height="867" alt="Screenshot 2026-03-10 152959" src="https://github.com/user-attachments/assets/1ea865a0-f62a-4911-979a-18d080065b80" />
 
-Figma Link:
-https://lace-read-52420261.figma.site/
 
 
