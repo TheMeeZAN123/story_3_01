@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/card_bg"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp">
+
+    <!-- counselor info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginEnd="12dp">
+
+        <TextView
+            android:id="@+id/counselorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dr. Sarah Johnson"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"/>
+
+        <TextView
+            android:id="@+id/counselorEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sarah.j@university.edu"
+            android:textSize="12sp"
+            android:textColor="@color/text_gray"/>
+
+        <!-- active/inactive status -->
+        <TextView
+            android:id="@+id/counselorStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active"
+            android:textSize="11sp"
+            android:textColor="@color/counselor_green"
+            android:background="@drawable/icon_bg_green"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
+    <!-- specialitites -->
+    <LinearLayout
+        android:id="@+id/specialtyTags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginEnd="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anxiety"
+            android:textSize="11sp"
+            android:textColor="@color/primary_blue"
+            android:background="@drawable/icon_bg_blue"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Depression"
+            android:textSize="11sp"
+            android:textColor="@color/primary_blue"
+            android:background="@drawable/icon_bg_blue"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"/>
+
+    </LinearLayout>
+
+    <!-- arrow -->
+    <!-- arrow clicked-> takes to next screen to edit that particular counselors info -->
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/right_arrow"/>
+
+</LinearLayout>

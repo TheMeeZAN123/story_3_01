@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_bg"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- top section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_calender"
+            android:background="@drawable/icon_bg_blue"
+            android:padding="8dp"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:id="@+id/studentName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="(student name)"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"/>
+
+        <!-- reschedule appointment -->
+        <ImageView
+            android:id="@+id/rescheduleBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            android:layout_marginEnd="12dp"/>
+
+        <!-- cancel appointment -->
+        <ImageView
+            android:id="@+id/cancelBtn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_cancel"/>
+
+    </LinearLayout>
+
+    <!-- date and time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_calender"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/appointmentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2026-03-10"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"
+            android:layout_marginEnd="16dp"/>
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_clock"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/appointmentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:00 PM"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"/>
+
+    </LinearLayout>
+
+    <!-- student profile -->
+    <Button
+        android:id="@+id/viewStudentProfileBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="View Student Profile"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_in_bg"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/viewIntakeFormBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="View Intake Form"
+        android:textSize="13sp"
+        android:textColor="@color/counselor_green"
+        android:background="@drawable/button_outline"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- status -->
+    <LinearLayout
+        android:id="@+id/statusBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/status_pending_bg"
+        android:padding="12dp">
+        <!-- will show if confirmed or no -->
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending Confirmation: Student has not confirmed this appointment yet"
+            android:textSize="12sp"
+            android:textColor="#856404"/>
+
+    </LinearLayout>
+
+</LinearLayout>

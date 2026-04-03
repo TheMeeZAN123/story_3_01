@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/slot_available"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_calender"
+        android:layout_marginEnd="12dp"/>
+
+    <!-- time and status -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/slotTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="09:00 AM"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"/>
+
+
+        <!-- status depending on actual status, WONT always show unavailable -->
+        <TextView
+            android:id="@+id/slotStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Available for booking"
+            android:textSize="12sp"
+            android:textColor="@color/counselor_green"/>
+
+    </LinearLayout>
+
+    <!-- mark available/unavailable -->
+    <Button
+        android:id="@+id/markBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Mark Unavailable"
+        android:textSize="11sp"
+        android:textColor="@color/text_dark"
+        android:background="@drawable/button_outline"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- cancel slot, delete -->
+    <ImageView
+        android:id="@+id/deleteSlotBtn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_cancel"/>
+
+</LinearLayout>

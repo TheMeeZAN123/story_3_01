@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">HamhamApp</string>
+    <!-- filter options -->
+    <string-array name="specialty_options">
+        <item>All Specialties</item>
+        <item>Anxiety</item>
+        <item>Depression</item>
+        <item>Stress Management</item>
+        <item>Relationship Issues</item>
+        <item>Self-esteem</item>
+        <item>Family Conflict</item>
+        <item>Trauma</item>
+        <item>Grief</item>
+    </string-array>
+
+    <!-- sorting options -->
+    <string-array name="sort_options">
+        <item>Sort by Rating</item>
+        <item>Sort by Name</item>
+    </string-array>
 </resources>

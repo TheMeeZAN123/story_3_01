@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_bg"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- top section: name, reschedule(edit), cancel(cross) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_calender"
+            android:background="@drawable/icon_bg_blue"
+            android:padding="8dp"
+            android:layout_marginEnd="12dp"/>
+
+        <TextView
+            android:id="@+id/appointmentCounselorName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dr. Sarah Johnson"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"/>
+
+        <!-- reschedule, edit -->
+        <ImageView
+            android:id="@+id/rescheduleBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            android:layout_marginEnd="12dp"/>
+
+        <!-- cancel -->
+        <ImageView
+            android:id="@+id/cancelBtn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_cancel"/>
+
+    </LinearLayout>
+
+    <!-- date n time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_calender"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/appointmentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2026-03-10"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"
+            android:layout_marginEnd="16dp"/>
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_clock"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/appointmentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:00 PM"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"/>
+
+    </LinearLayout>
+
+    <!-- confirm Button (only for upcoming) -->
+    <Button
+        android:id="@+id/confirmAppointmentBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Confirm Appointment"
+        android:textSize="13sp"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_in_bg"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"/>
+
+</LinearLayout>

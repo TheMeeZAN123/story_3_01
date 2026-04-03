@@ -2,4 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background">#F0F4FF</color>
+    <color name="primary_blue">#3B5BDB</color>
+    <color name="student_blue">#3B5BDB</color>
+    <color name="counselor_green">#40C057</color>
+    <color name="admin_purple">#7950F2</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_gray">#888888</color>
+    <color name="blah">#E8EEFF</color>
+    <color name="border_gray">#DDDDDD</color>
+    <color name= "light_blue"> #BCDDED</color>
+    <color name="primary_red">#DB3B3B</color>
 </resources>

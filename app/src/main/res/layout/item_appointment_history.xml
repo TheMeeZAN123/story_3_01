@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_bg"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- name, status -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/counselorName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dr. Sarah Johnson"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"/>
+
+        <TextView
+            android:id="@+id/sessionStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Completed"
+            android:textSize="11sp"
+            android:textColor="@color/counselor_green"
+            android:background="@drawable/icon_bg_green"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"/>
+
+    </LinearLayout>
+
+    <!-- date, time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_calender"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/sessionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2026-03-10"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"
+            android:layout_marginEnd="16dp"/>
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_clock"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:id="@+id/sessionTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:00 PM"
+            android:textSize="13sp"
+            android:textColor="@color/text_gray"/>
+
+    </LinearLayout>
+
+    <!-- intake form button -->
+    <Button
+        android:id="@+id/viewIntakeFormBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="View Intake Form"
+        android:textSize="13sp"
+        android:textColor="@color/counselor_green"
+        android:background="@drawable/button_outline"/>
+
+</LinearLayout>
