@@ -157,6 +157,26 @@
                 </LinearLayout>
 
             </LinearLayout>
+            <!-- name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                android:textSize="14sp"
+                android:textColor="@color/text_dark"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/nameInput"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Enter your full name"
+                android:inputType="textPersonName"
+                android:background="@drawable/input_bg"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp"/>
 
             <!-- email -->
             <TextView
@@ -193,6 +213,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:background="@drawable/input_bg"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- confirm password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm Password"
+                android:textSize="14sp"
+                android:textColor="@color/text_dark"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/confirmPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Re-enter your password"
                 android:inputType="textPassword"
                 android:background="@drawable/input_bg"
                 android:paddingStart="16dp"

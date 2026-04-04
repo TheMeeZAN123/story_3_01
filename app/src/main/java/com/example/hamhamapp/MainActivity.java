@@ -87,27 +87,27 @@ public class MainActivity extends AppCompatActivity {
         createAccount.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, CreateAccount.class));
         });
-//
-//        // sign in — routes based on selected role
-//        // TODO: replace with Firebase Authentication when connected
-//        signInButton.setOnClickListener(v -> {
-//            String email = emailInput.getText().toString().trim();
-//
-//            if (selectedRole.equals("student")) {
-//                Intent intent = new Intent(MainActivity.this, StudentDashboardActivity.class);
-//                intent.putExtra("email", email);
-//                startActivity(intent);
-//
-//            } else if (selectedRole.equals("counselor")) {
-//                Intent intent = new Intent(MainActivity.this, CounselorDashboardActivity.class);
-//                intent.putExtra("email", email);
-//                startActivity(intent);
-//
-//            } else if (selectedRole.equals("admin")) {
-//                Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
-//                intent.putExtra("email", email);
-//                startActivity(intent);
-//            }
-//        });
+
+        // sign in — routes based on selected role
+        // TODO: replace with Firebase Authentication when connected
+        signInButton.setOnClickListener(v -> {
+            String email = emailInput.getText().toString().trim();
+
+            if (selectedRole.equals("student")) {
+                Intent intent = new Intent(MainActivity.this, StudentDashboardActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+
+            } else if (selectedRole.equals("counselor")) {
+                Intent intent = new Intent(MainActivity.this, CounselorDashboardActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+
+            } else if (selectedRole.equals("admin")) {
+                Intent intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }
+        });
     }
 }
