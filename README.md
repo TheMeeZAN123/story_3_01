@@ -159,7 +159,7 @@ Sunday, Apr 5, 2026
 
 **Sprint 1:** Mina Zeeshan
 
-| Duration | Description | User Stories Covered |
+| Duration | Description | Related to User Stories |
 |----------|-------------|----------------------|
 | 5 hours | Set up initial app and pushed to Git. Set up Firestore database. | — |
 | Full day | Built entire UI in Android Studio based on Figma design. | — |
@@ -167,7 +167,7 @@ Sunday, Apr 5, 2026
 | 6 hours | Finished all navigation for screens related to admin, counselor, scheduling, appointments, and profile. | 2-01, 2-02, 2-03, 2-04, 2-05, 3-01, 3-02, 3-03, 3-05, 3-06, 4-01, 4-03, 4-04, 4-05, 4-06, 4-07, 4-08, 8-01, 8-02, 8-03, 8-04, 8-05 |
 
 **Sprint 2:** Hareem Fatima
-| Duration | Description | User Stories Covered |
+| Duration | Description | Related to User Stories |
 |----------|-------------|----------------------|
 
 ---
