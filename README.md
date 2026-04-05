@@ -12,6 +12,9 @@
   - [Meeting – Feb 22, 2026](#meeting--feb-22-2026)
   - [Meeting – Mar 2, 2026](#meeting--mar-2-2026)
   - [Meeting – Mar 8, 2026](#meeting--mar-8-2026)
+ 
+- [Sprint Log](#sprint-log)
+  - [Sprint Log – Project Part 2](#sprint-log--project-part-2)
 
 - [Object-oriented analysis (CRC cards)](#object-oriented-analysis-crc-cards)
 
@@ -126,6 +129,20 @@ Sunday, March 8, 2026
 - [ ] Finalize all deliverables for upcoming deadline
 ---
 
+## Sprint Log
+
+### Sprint Log – Project Part 2
+
+**Done by:** Mina Zeeshan
+
+| Sprint | Date | Duration | Description | User Stories Covered |
+|--------|------|----------|-------------|----------------------|
+| Sprint 1 | April 1, 2026 | 5 hours | Set up initial app and pushed to Git. Set up Firestore database. | — |
+| Sprint 2 | April 2, 2026 | Full day | Built entire UI in Android Studio based on Figma design. | — |
+| Sprint 3 | April 3, 2026 | 2 hours | Finished all navigation for screens related to authentication and session management. | 1-01, 1-02, 1-03, 1-04, 1-05, 1-06, 1-07, 1-09, 1-10 |
+| Sprint 4 | April 4, 2026 | 6 hours | Finished all navigation for screens related to admin, counselor, scheduling, appointments, and profile. | 2-01, 2-02, 2-03, 2-04, 2-05, 3-01, 3-02, 3-03, 3-05, 3-06, 4-01, 4-03, 4-04, 4-05, 4-06, 4-07, 4-08, 8-01, 8-02, 8-03, 8-04, 8-05 |
+
+---
 ## Object-Oriented Analysis (CRC Cards)
 ![CRC Cards](./CRC_Cards.png)
 ---
