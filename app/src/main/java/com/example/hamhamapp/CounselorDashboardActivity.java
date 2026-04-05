@@ -1,118 +1,129 @@
 package com.example.hamhamapp;
 
-/**
- * CounselorDashboardActivity.java
- *
- * Purpose: Main home screen for counselor users after login.
- * Displays navigation cards to View Calendar, Manage Availability,
- * Student Records and My Profile. Shows average rating and
- * today's schedule preview. Email is received via Intent from
- * MainActivity.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - Average rating, today's schedule are placeholder text
- * - Welcome name not yet fetched from Firestore
- */
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hamhamapp.AuthRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+/**
+ * CounselorDashboardActivity.java
+ *
+ * Purpose: Home screen Controller (MVC) for authenticated counselor users.
+ * Fetches the counselor's name and average rating from Firestore.
+ * Provides navigation to View Calendar, Manage Availability, Student Records,
+ * and My Profile. Logout calls AuthRepository.logout() and clears the
+ * Activity back stack.
+ *
+ * Outstanding issues:
+ * - Today's schedule preview not yet loaded from Firestore.
+ * - Notification bell not yet implemented.
+ */
 public class CounselorDashboardActivity extends AppCompatActivity {
 
-    LinearLayout cardViewCalendar, cardManageAvailability, cardStudentRecords, cardMyProfile;
-    ImageView notificationBell;
-    TextView welcomeText, profileLink, viewAllSchedule, averageRating;
-    String email;
-    Button logoutBtn;
+    LinearLayout cardViewCalendar, cardManageAvailability,
+            cardStudentRecords, cardMyProfile;
+    ImageView    notificationBell;
+    TextView     welcomeText, profileLink, viewAllSchedule, averageRating;
+    Button       logoutBtn;
+    String       email;
+
+    AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counselor_dashboard);
 
-        // get email passed from login
-        email = getIntent().getStringExtra("email");
+        authRepository = new AuthRepository();
+        email          = getIntent().getStringExtra("email");
 
-        // initialize views
-        cardViewCalendar = findViewById(R.id.cardViewCalendar);
+        cardViewCalendar       = findViewById(R.id.cardViewCalendar);
         cardManageAvailability = findViewById(R.id.cardManageAvailability);
-        cardStudentRecords = findViewById(R.id.cardStudentRecords);
-        cardMyProfile = findViewById(R.id.cardMyProfile);
-        notificationBell = findViewById(R.id.notificationBell);
-        welcomeText = findViewById(R.id.welcomeText);
-        profileLink = findViewById(R.id.profileLink);
-        viewAllSchedule = findViewById(R.id.viewAllSchedule);
-        averageRating = findViewById(R.id.averageRating);
-        logoutBtn = findViewById(R.id.logoutBtn);
+        cardStudentRecords     = findViewById(R.id.cardStudentRecords);
+        cardMyProfile          = findViewById(R.id.cardMyProfile);
+        notificationBell       = findViewById(R.id.notificationBell);
+        welcomeText            = findViewById(R.id.welcomeText);
+        profileLink            = findViewById(R.id.profileLink);
+        viewAllSchedule        = findViewById(R.id.viewAllSchedule);
+        averageRating          = findViewById(R.id.averageRating);
+        logoutBtn              = findViewById(R.id.logoutBtn);
 
-        // TODO: replace with actual name from Firestore
-        welcomeText.setText("Welcome, Dr. !");
+        loadCounselorInfo();
 
-        // TODO: replace with actual rating from Firestore
-        averageRating.setText("--");
+        profileLink.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorProfileActivity.class)
+                        .putExtra("email", email)));
 
-        // notification bell not going to implement rn
+        cardViewCalendar.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorMyAppointmentsActivity.class)
+                        .putExtra("email", email)));
 
-        // profile link
-        profileLink.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, CounselorProfileActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardManageAvailability.setOnClickListener(v ->
+                startActivity(new Intent(this, ManageAvailabilityActivity.class)
+                        .putExtra("email", email)));
 
-        // view calendar → counselor appointments
-        cardViewCalendar.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, CounselorMyAppointmentsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardStudentRecords.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentProfileCounselorSide.class)
+                        .putExtra("email", email)));
 
-        // manage availability
-        cardManageAvailability.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, ManageAvailabilityActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardMyProfile.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorProfileActivity.class)
+                        .putExtra("email", email)));
 
-        // student records
-        cardStudentRecords.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, StudentProfileCounselorSide.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        viewAllSchedule.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorMyAppointmentsActivity.class)
+                        .putExtra("email", email)));
 
-        // my profile
-        cardMyProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, CounselorProfileActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        // TODO: connect viewProfileBtn to actual today's-schedule appointment data
+        findViewById(R.id.viewProfileBtn).setOnClickListener(v ->
+                startActivity(new Intent(this, StudentProfileCounselorSide.class)
+                        .putExtra("email", email)));
 
-        // view all schedule
-        viewAllSchedule.setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, CounselorMyAppointmentsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        logoutBtn.setOnClickListener(v ->
+                authRepository.logout(new AuthRepository.AuthCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        startActivity(new Intent(CounselorDashboardActivity.this,
+                                MainActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(CounselorDashboardActivity.this,
+                                error, Toast.LENGTH_SHORT).show();
+                    }
+                }));
+    }
 
-        // view student profile from today's schedule
-        // TODO: connect to actual appointment data from Firebase
-        findViewById(R.id.viewProfileBtn).setOnClickListener(v -> {
-            Intent intent = new Intent(CounselorDashboardActivity.this, StudentProfileCounselorSide.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
-
-        // logout : go back to main activity
-        logoutBtn.setOnClickListener(v->{
-            Intent intent = new Intent(CounselorDashboardActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+    /**
+     * Fetches the counselor's name and average rating from Firestore and
+     * populates the welcome message and rating display. Falls back gracefully
+     * if the document cannot be read.
+     */
+    private void loadCounselorInfo() {
+        if (authRepository.getCurrentUser() == null) return;
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(authRepository.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String name   = doc.getString("name");
+                        Double rating = doc.getDouble("rating");
+                        welcomeText.setText("Welcome, Dr. " + (name != null ? name : "") + "!");
+                        averageRating.setText(rating != null
+                                ? String.format("%.1f", rating) : "--");
+                    }
+                })
+                .addOnFailureListener(e -> welcomeText.setText("Welcome!"));
     }
 }

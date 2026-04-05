@@ -274,6 +274,10 @@
                     android:text="Sign In"
                     android:textSize="14sp"
                     android:textColor="@color/primary_blue"/>
+                <ProgressBar android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

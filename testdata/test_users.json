@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "email": "hareemxkhann@gmail.com",
+      "password": "password123",
+      "name": "Hareem Admin",
+      "role": "admin"
+    },
+    {
+      "email": "counselor@hamham.com",
+      "password": "password123",
+      "name": "Jane Counselor",
+      "role": "counselor",
+      "phone": "555-0101",
+      "specialties": ["Anxiety", "Stress Management"],
+      "description": "Experienced counselor specialized in student mental health."
+    },
+    {
+      "email": "student@hamham.com",
+      "password": "password123",
+      "name": "John Student",
+      "role": "student",
+      "phone": "555-0102",
+      "noShowCount": 0,
+      "accountStatus": "active"
+    }
+  ]
+}

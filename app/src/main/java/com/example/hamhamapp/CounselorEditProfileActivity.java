@@ -1,104 +1,174 @@
 package com.example.hamhamapp;
 
-/**
- * CounselorEditProfileActivity.java
- *
- * Purpose: Allows counselor to edit their personal information
- * including name, phone, specialties and description.
- * Email cannot be changed as it is tied to Firebase Authentication.
- * Specialties are entered as comma separated values and will be
- * parsed into a list when saved to Firestore.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - Fields not yet pre-filled with current data from Firestore
- * - Save changes not yet functional
- * - Specialties need to be parsed by comma into list for Firestore
- */
-
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hamhamapp.AuthRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * CounselorEditProfileActivity.java
+ *
+ * Purpose: Controller (MVC) that allows a counselor to edit their profile
+ * information (name, phone, specialties, description) and change their
+ * login password. Profile changes are saved to the Firestore "users"
+ * collection. Password changes go through Firebase Auth via AuthRepository.
+ * Fields are pre-filled with current values fetched from Firestore on load.
+ * Email cannot be edited — it is the Firebase Auth login credential.
+ *
+ * Outstanding issues: None.
+ */
 public class CounselorEditProfileActivity extends AppCompatActivity {
 
     ImageView backButton;
-    EditText nameInput, phoneInput, specialtiesInput, descriptionInput;
-    Button saveChangesBtn, cancelBtn;
-    String email;
+    EditText  nameInput, phoneInput, specialtiesInput, descriptionInput;
+    EditText  newPasswordInput, confirmNewPasswordInput;
+    Button    saveChangesBtn, cancelBtn, changePasswordBtn;
+    String    email;
+
+    AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_counselor_info);
 
-        // get email passed from previous screen
-        email = getIntent().getStringExtra("email");
+        authRepository = new AuthRepository();
+        email          = getIntent().getStringExtra("email");
 
-        // initialize views
-        backButton = findViewById(R.id.backButton);
-        nameInput = findViewById(R.id.nameInput);
-        phoneInput = findViewById(R.id.phoneInput);
-        specialtiesInput = findViewById(R.id.specialtiesInput);
-        descriptionInput = findViewById(R.id.descriptionInput);
-        saveChangesBtn = findViewById(R.id.saveChangesBtn);
-        cancelBtn = findViewById(R.id.cancelBtn);
+        backButton            = findViewById(R.id.backButton);
+        nameInput             = findViewById(R.id.nameInput);
+        phoneInput            = findViewById(R.id.phoneInput);
+        specialtiesInput      = findViewById(R.id.specialtiesInput);
+        descriptionInput      = findViewById(R.id.descriptionInput);
+        saveChangesBtn        = findViewById(R.id.saveChangesBtn);
+        cancelBtn             = findViewById(R.id.cancelBtn);
+        newPasswordInput      = findViewById(R.id.newPasswordInput);
+        confirmNewPasswordInput = findViewById(R.id.confirmNewPasswordInput);
+        changePasswordBtn     = findViewById(R.id.changePasswordBtn);
 
-        // back button
         backButton.setOnClickListener(v -> finish());
+        cancelBtn.setOnClickListener(v  -> finish());
 
-        // cancel button
-        cancelBtn.setOnClickListener(v -> finish());
+        prefillFields();
 
-        // TODO: pre-fill fields with current counselor data from Firestore
-        // FirebaseFirestore.getInstance()
-        //     .collection("counselors")
-        //     .document(email)
-        //     .get()
-        //     .addOnSuccessListener(doc -> {
-        //         nameInput.setText(doc.getString("name"));
-        //         phoneInput.setText(doc.getString("phone"));
-        //         descriptionInput.setText(doc.getString("description"));
-        //         // join specialties list into comma separated string
-        //         List<String> specialties = (List<String>) doc.get("specialties");
-        //         if (specialties != null) {
-        //             specialtiesInput.setText(String.join(", ", specialties));
-        //         }
-        //     });
+        saveChangesBtn.setOnClickListener(v -> saveProfileChanges());
 
-        // save changes button
-        saveChangesBtn.setOnClickListener(v -> {
-            String name = nameInput.getText().toString().trim();
-            String phone = phoneInput.getText().toString().trim();
-            String specialties = specialtiesInput.getText().toString().trim();
-            String description = descriptionInput.getText().toString().trim();
+        changePasswordBtn.setOnClickListener(v -> attemptPasswordChange());
+    }
 
-            // basic validation
-            if (name.isEmpty()) {
-                nameInput.setError("Name is required");
-                return;
+    /**
+     * Reads current counselor data from Firestore and populates each
+     * EditText so the counselor can see their existing values before editing.
+     */
+    private void prefillFields() {
+        if (authRepository.getCurrentUser() == null) return;
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(authRepository.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) return;
+                    nameInput.setText(doc.getString("name"));
+                    phoneInput.setText(doc.getString("phone"));
+                    descriptionInput.setText(doc.getString("description"));
+                    List<String> specs = (List<String>) doc.get("specialties");
+                    if (specs != null) {
+                        specialtiesInput.setText(TextUtils.join(", ", specs));
+                    }
+                });
+    }
+
+    /**
+     * Validates the name field then writes updated profile data to Firestore.
+     * Specialties are parsed from a comma-separated string into a List.
+     */
+    private void saveProfileChanges() {
+        String name        = nameInput.getText().toString().trim();
+        String phone       = phoneInput.getText().toString().trim();
+        String specialties = specialtiesInput.getText().toString().trim();
+        String description = descriptionInput.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            nameInput.setError("Name is required");
+            return;
+        }
+
+        String[] parts = specialties.split(",");
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+        }
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name",        name);
+        updates.put("phone",       phone);
+        updates.put("description", description);
+        updates.put("specialties", Arrays.asList(parts));
+
+        saveChangesBtn.setEnabled(false);
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(authRepository.getCurrentUser().getUid())
+                .update(updates)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Profile updated.", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    saveChangesBtn.setEnabled(true);
+                    Toast.makeText(this,
+                            "Save failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    /**
+     * Validates the new password fields then delegates to
+     * AuthRepository.changePassword(). Clears the password fields on success.
+     */
+    private void attemptPasswordChange() {
+        String newPassword     = newPasswordInput.getText().toString().trim();
+        String confirmPassword = confirmNewPasswordInput.getText().toString().trim();
+
+        if (newPassword.isEmpty()) {
+            newPasswordInput.setError("New password is required");
+            return;
+        }
+        if (newPassword.length() < 6) {
+            newPasswordInput.setError("Password must be at least 6 characters");
+            return;
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            confirmNewPasswordInput.setError("Passwords do not match");
+            return;
+        }
+
+        changePasswordBtn.setEnabled(false);
+        authRepository.changePassword(newPassword, new AuthRepository.AuthCallback() {
+            @Override
+            public void onSuccess(String message) {
+                changePasswordBtn.setEnabled(true);
+                Toast.makeText(CounselorEditProfileActivity.this,
+                        message, Toast.LENGTH_SHORT).show();
+                newPasswordInput.setText("");
+                confirmNewPasswordInput.setText("");
             }
-
-            // parse specialties by comma into list
-            // e.g. "Anxiety, Depression" → ["Anxiety", "Depression"]
-            String[] specialtiesList = specialties.split(",");
-
-            // TODO: save updated data to Firestore
-            // Map<String, Object> updates = new HashMap<>();
-            // updates.put("name", name);
-            // updates.put("phone", phone);
-            // updates.put("description", description);
-            // updates.put("specialties", Arrays.asList(specialtiesList));
-            // FirebaseFirestore.getInstance()
-            //     .collection("counselors")
-            //     .document(email)
-            //     .update(updates)
-            //     .addOnSuccessListener(v -> finish());
-
-            // for now just go back
-            finish();
+            @Override
+            public void onError(String error) {
+                changePasswordBtn.setEnabled(true);
+                Toast.makeText(CounselorEditProfileActivity.this,
+                        error, Toast.LENGTH_LONG).show();
+            }
         });
     }
 }

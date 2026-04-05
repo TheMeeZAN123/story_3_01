@@ -1,105 +1,115 @@
 package com.example.hamhamapp;
 
-/**
- * StudentDashboardActivity.java
- *
- * Purpose: Main home screen for student users after login.
- * Displays navigation cards to Find Counselor, My Appointments,
- * and My Profile. Shows upcoming appointment preview and
- * recent notifications. Email is received via Intent from
- * MainActivity.
- */
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hamhamapp.AuthRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+/**
+ * StudentDashboardActivity.java
+ *
+ * Purpose: Home screen Controller (MVC) for authenticated student users.
+ * Fetches the student's display name from Firestore and populates the
+ * welcome message. Provides navigation to Find Counselor, My Appointments,
+ * and My Profile. Logout calls AuthRepository.logout() and clears the
+ * Activity back stack so the user must log in again to return.
+ *
+ * Outstanding issues:
+ * - Upcoming appointment preview card not yet loaded from Firestore.
+ * - Notification badge count not yet fetched from Firestore.
+ */
 public class StudentDashboardActivity extends AppCompatActivity {
 
     LinearLayout cardFindCounselor, cardMyAppointments, cardMyProfile;
-    TextView welcomeText, profileLink, viewAllAppointments;
-    ImageView notificationBell;
-    String email;
-    Button logoutBtn;
+    TextView     welcomeText, profileLink, viewAllAppointments;
+    ImageView    notificationBell;
+    Button       logoutBtn;
+    String       email;
+
+    AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_dashboard);
 
-        // get email passed from login
-        email = getIntent().getStringExtra("email");
+        authRepository = new AuthRepository();
+        email          = getIntent().getStringExtra("email");
 
-        // initialize views
-        cardFindCounselor = findViewById(R.id.cardFindCounselor);
+        cardFindCounselor  = findViewById(R.id.cardFindCounselor);
         cardMyAppointments = findViewById(R.id.cardMyAppointments);
-        cardMyProfile = findViewById(R.id.cardMyProfile);
-        welcomeText = findViewById(R.id.welcomeText);
-        notificationBell = findViewById(R.id.notificationBell);
-        profileLink = findViewById(R.id.profileLink);
+        cardMyProfile      = findViewById(R.id.cardMyProfile);
+        welcomeText        = findViewById(R.id.welcomeText);
+        notificationBell   = findViewById(R.id.notificationBell);
+        profileLink        = findViewById(R.id.profileLink);
         viewAllAppointments = findViewById(R.id.viewAllAppointments);
-        logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn          = findViewById(R.id.logoutBtn);
 
-        // set welcome message
-        // TODO: replace with actual name from Firestore
-        welcomeText.setText("Welcome, (student name)!");
+        loadStudentName();
 
-        // find counselor
-        cardFindCounselor.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, FindCounselorActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardFindCounselor.setOnClickListener(v ->
+                startActivity(new Intent(this, FindCounselorActivity.class)
+                        .putExtra("email", email)));
 
-        // my appointments
-        cardMyAppointments.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, StudentMyAppointmentsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardMyAppointments.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentMyAppointmentsActivity.class)
+                        .putExtra("email", email)));
 
-        // my profile
-        cardMyProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, StudentProfileStudentSide.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardMyProfile.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentProfileStudentSide.class)
+                        .putExtra("email", email)));
 
-        // notifications bell
-        notificationBell.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, StudentNotificationsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        notificationBell.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentNotificationsActivity.class)
+                        .putExtra("email", email)));
 
-        // profile link top right
-        profileLink.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, StudentProfileStudentSide.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        profileLink.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentProfileStudentSide.class)
+                        .putExtra("email", email)));
 
-        // view all appointments
-        viewAllAppointments.setOnClickListener(v -> {
-            Intent intent = new Intent(StudentDashboardActivity.this, StudentMyAppointmentsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
-//
-//        // confirm appointment button
-//        // TODO: connect to Firebase to confirm actual appointment
-//        findViewById(R.id.confirmAppointmentBtn).setOnClickListener(v -> {
-//            // placeholder for now
-//        });
+        viewAllAppointments.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentMyAppointmentsActivity.class)
+                        .putExtra("email", email)));
 
-        // logout : go back to main activity
-        logoutBtn.setOnClickListener(v->{
-            Intent intent = new Intent(StudentDashboardActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        logoutBtn.setOnClickListener(v ->
+                authRepository.logout(new AuthRepository.AuthCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        startActivity(new Intent(StudentDashboardActivity.this,
+                                MainActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(StudentDashboardActivity.this,
+                                error, Toast.LENGTH_SHORT).show();
+                    }
+                }));
+    }
+
+    /**
+     * Fetches the student's name from Firestore and updates the welcome TextView.
+     * Falls back to showing the email address if the document cannot be read.
+     */
+    private void loadStudentName() {
+        if (authRepository.getCurrentUser() == null) return;
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(authRepository.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    String name = doc.exists() ? doc.getString("name") : null;
+                    welcomeText.setText("Welcome, " + (name != null ? name : email) + "!");
+                })
+                .addOnFailureListener(e -> welcomeText.setText("Welcome!"));
     }
 }

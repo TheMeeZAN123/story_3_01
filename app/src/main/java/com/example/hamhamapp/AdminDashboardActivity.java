@@ -1,65 +1,75 @@
 package com.example.hamhamapp;
 
-/**
- * AdminDashboardActivity.java
- *
- * Purpose: Main home screen for admin users after login.
- * Provides navigation to Manage Counselors, View All Appointments,
- * and Flagged Students. Also has quick actions for registering
- * new counselors and reviewing flagged accounts.
- * Email is received via Intent from MainActivity.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - All data is placeholder for UI testing
- */
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hamhamapp.AuthRepository;
+
+/**
+ * AdminDashboardActivity.java
+ *
+ * Purpose: Home screen Controller (MVC) for authenticated admin users.
+ * Provides navigation to Manage Counselors and a quick action to
+ * register a new counselor. Logout calls AuthRepository.logout() and
+ * clears the Activity back stack.
+ *
+ * Outstanding issues:
+ * - View All Appointments card not yet connected to an Activity.
+ * - Flagged Students card not yet connected to an Activity.
+ * - Dashboard stats (total counselors, appointments today) not yet
+ *   loaded from Firestore.
+ */
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    LinearLayout cardManageCounselors, cardViewAllAppointments, cardFlaggedStudents, actionRegisterCounselor, actionReviewFlagged;
-    String email;
-    Button logoutBtn;
+    LinearLayout cardManageCounselors, cardViewAllAppointments,
+            cardFlaggedStudents, actionRegisterCounselor, actionReviewFlagged;
+    Button       logoutBtn;
+    String       email;
+
+    AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_dashboard);
 
-        // get email passed from login
-        email = getIntent().getStringExtra("email");
+        authRepository = new AuthRepository();
+        email          = getIntent().getStringExtra("email");
 
-        // initialize views
-        cardManageCounselors = findViewById(R.id.cardManageCounselors);
+        cardManageCounselors    = findViewById(R.id.cardManageCounselors);
         cardViewAllAppointments = findViewById(R.id.cardViewAllAppointments);
-        cardFlaggedStudents = findViewById(R.id.cardFlaggedStudents);
+        cardFlaggedStudents     = findViewById(R.id.cardFlaggedStudents);
         actionRegisterCounselor = findViewById(R.id.actionRegisterCounselor);
-        actionReviewFlagged = findViewById(R.id.actionReviewFlagged);
-        logoutBtn= findViewById(R.id.logoutBtn);
+        actionReviewFlagged     = findViewById(R.id.actionReviewFlagged);
+        logoutBtn               = findViewById(R.id.logoutBtn);
 
-        // manage counselors
-        cardManageCounselors.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminDashboardActivity.this, AdminManageCounselorsActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        cardManageCounselors.setOnClickListener(v ->
+                startActivity(new Intent(this, AdminManageCounselorsActivity.class)
+                        .putExtra("email", email)));
 
-        // quick action: register new counselor
-        actionRegisterCounselor.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminDashboardActivity.this, AdminAddCounselorActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
-        });
+        actionRegisterCounselor.setOnClickListener(v ->
+                startActivity(new Intent(this, AdminAddCounselorActivity.class)
+                        .putExtra("email", email)));
 
-        // logout : go back to main activity
-        logoutBtn.setOnClickListener(v->{
-            Intent intent = new Intent(AdminDashboardActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        logoutBtn.setOnClickListener(v ->
+                authRepository.logout(new AuthRepository.AuthCallback() {
+                    @Override
+                    public void onSuccess(String message) {
+                        startActivity(new Intent(AdminDashboardActivity.this,
+                                MainActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(AdminDashboardActivity.this,
+                                error, Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 }
