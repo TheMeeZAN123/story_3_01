@@ -13,8 +13,8 @@
   - [Meeting – Mar 2, 2026](#meeting--mar-2-2026)
   - [Meeting – Mar 8, 2026](#meeting--mar-8-2026)
  
-  - [Sprint Log](#sprint-log)
-    - [Sprint Log – Project Part 2](#sprint-log--project-part-2)
+- [Sprint Log](#sprint-log)
+  - [Sprint Log – Project Part 2](#sprint-log--project-part-2)
 
 - [Object-oriented analysis (CRC cards)](#object-oriented-analysis-crc-cards)
 
