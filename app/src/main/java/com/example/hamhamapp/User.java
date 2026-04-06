@@ -8,8 +8,6 @@ package com.example.hamhamapp;
  * Instances are stored in the Firestore "users" collection, keyed by
  * the Firebase Auth UID. Subclassed by Student and Counselor for
  * role-specific fields. Follows the Model layer of the MVC pattern.
- *
- * Outstanding issues: None.
  */
 public class User {
 
@@ -18,6 +16,7 @@ public class User {
     private String email;
     private String phone;
     private String role; // "student" | "counselor" | "admin"
+    private boolean isActive = true; // defaults to true
 
     /** Required no-arg constructor for Firestore deserialization. */
     public User() {}
@@ -37,6 +36,7 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.role  = role;
+        this.isActive = true;
     }
 
     /** @return Firebase Auth UID. */
@@ -68,4 +68,10 @@ public class User {
 
     /** @param role Role string. */
     public void setRole(String role) { this.role = role; }
+
+    /** @return true if account is active. */
+    public boolean getIsActive() { return isActive; }
+
+    /** @param active status. */
+    public void setIsActive(boolean active) { isActive = active; }
 }

@@ -6,11 +6,6 @@ package com.example.hamhamapp;
  * Purpose: Displays action options for a selected counselor.
  * Admin can edit counselor info or toggle active/inactive status.
  * Counselor ID is passed via Intent from ManageCounselorsActivity.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - Counselor data is placeholder for UI testing
- * - Toggle status confirmation dialog not yet implemented
  */
 
 import android.content.Intent;
@@ -19,20 +14,27 @@ import android.app.AlertDialog;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminEditCounselorActivity extends AppCompatActivity {
 
     ImageView backButton;
     LinearLayout actionEditInfo, actionToggleStatus;
-    TextView toggleStatusText, counselorStatus;
+    TextView toggleStatusText, counselorStatus, counselorName, counselorEmail;
     String email, counselorId;
     boolean isActive = true;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_edit_counselor);
+
+        db = FirebaseFirestore.getInstance();
 
         // get data passed from previous screen
         email = getIntent().getStringExtra("email");
@@ -44,12 +46,14 @@ public class AdminEditCounselorActivity extends AppCompatActivity {
         actionToggleStatus = findViewById(R.id.actionToggleStatus);
         toggleStatusText = findViewById(R.id.toggleStatusText);
         counselorStatus = findViewById(R.id.counselorStatus);
+        counselorName = findViewById(R.id.counselorName);
+        counselorEmail = findViewById(R.id.counselorEmail);
 
         // back button
         backButton.setOnClickListener(v -> finish());
 
-        // TODO: fetch counselor data from Firestore using counselorId
-        // TODO: set counselor name, email, status
+        // fetch counselor data from Firestore
+        loadCounselorData();
 
         // edit counselor info
         actionEditInfo.setOnClickListener(v -> {
@@ -62,6 +66,40 @@ public class AdminEditCounselorActivity extends AppCompatActivity {
 
         // toggle active/inactive with confirmation dialog
         actionToggleStatus.setOnClickListener(v -> showToggleConfirmation());
+    }
+
+    private void loadCounselorData() {
+        if (counselorId == null) return;
+
+        db.collection("users").document(counselorId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String name = documentSnapshot.getString("name");
+                        String mail = documentSnapshot.getString("email");
+                        Boolean active = documentSnapshot.getBoolean("isActive");
+                        
+                        if (active == null) active = true; // default to true if field missing
+                        isActive = active;
+
+                        counselorName.setText(name);
+                        counselorEmail.setText(mail);
+                        updateStatusUI();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error loading counselor: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void updateStatusUI() {
+        if (isActive) {
+            toggleStatusText.setText("Mark as Inactive");
+            counselorStatus.setText("Active");
+            counselorStatus.setTextColor(getResources().getColor(R.color.counselor_green, null));
+        } else {
+            toggleStatusText.setText("Mark as Active");
+            counselorStatus.setText("Inactive");
+            counselorStatus.setTextColor(getResources().getColor(R.color.text_gray, null));
+        }
     }
 
     /**
@@ -79,22 +117,24 @@ public class AdminEditCounselorActivity extends AppCompatActivity {
     }
 
     /**
-     * Toggles counselor active/inactive status.
-     * Will update Firestore when connected.
+     * Toggles counselor active/inactive status in Firestore.
      */
     private void toggleStatus() {
-        isActive = !isActive;
+        boolean nextState = !isActive;
 
-        if (isActive) {
-            toggleStatusText.setText("Mark as Inactive");
-            counselorStatus.setText("Active");
-            counselorStatus.setTextColor(getColor(R.color.counselor_green));
-        } else {
-            toggleStatusText.setText("Mark as Active");
-            counselorStatus.setText("Inactive");
-            counselorStatus.setTextColor(getColor(R.color.text_gray));
-        }
+        db.collection("users").document(counselorId)
+                .update("isActive", nextState)
+                .addOnSuccessListener(aVoid -> {
+                    isActive = nextState;
+                    updateStatusUI();
+                    Toast.makeText(this, "Status updated", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update status: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
 
-        // TODO: update status in Firestore
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCounselorData();
     }
 }
