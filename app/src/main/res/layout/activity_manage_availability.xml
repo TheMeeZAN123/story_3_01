@@ -100,8 +100,38 @@
                         android:src="@drawable/ic_calender"/>
                 </LinearLayout>
 
+                <!-- Recurring Days Selection -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Apply to multiple days (Optional)"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_gray"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
+                    <CheckBox android:id="@+id/cbMon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="M"/>
+                    <CheckBox android:id="@+id/cbTue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T"/>
+                    <CheckBox android:id="@+id/cbWed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="W"/>
+                    <CheckBox android:id="@+id/cbThu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="T"/>
+                    <CheckBox android:id="@+id/cbFri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="F"/>
+                    <CheckBox android:id="@+id/cbSat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S"/>
+                    <CheckBox android:id="@+id/cbSun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="S"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Repeat for next 4 weeks"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_gray"
+                    android:layout_gravity="center"/>
 
             </LinearLayout>
 
@@ -221,7 +251,7 @@
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_weight="1"
-            android:text="Save Changes"
+            android:text="Done"
             android:textSize="15sp"
             android:textColor="@color/white"
             android:background="@drawable/sign_in_bg"/>

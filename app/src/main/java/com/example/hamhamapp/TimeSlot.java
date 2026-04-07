@@ -8,16 +8,18 @@ public class TimeSlot {
     private String id;
     private String counselorId;
     private String date; // YYYY-MM-DD
-    private String time; // HH:MM AM/PM
+    private String startTime; // HH:MM AM/PM
+    private String endTime; // HH:MM AM/PM
     private boolean isBooked;
 
     public TimeSlot() {}
 
-    public TimeSlot(String id, String counselorId, String date, String time, boolean isBooked) {
+    public TimeSlot(String id, String counselorId, String date, String startTime, String endTime, boolean isBooked) {
         this.id = id;
         this.counselorId = counselorId;
         this.date = date;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.isBooked = isBooked;
     }
 
@@ -30,9 +32,17 @@ public class TimeSlot {
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+
+    public String getEndTime() { return endTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
 
     public boolean isBooked() { return isBooked; }
     public void setBooked(boolean booked) { isBooked = booked; }
+
+    /** @return Combined time string "startTime - endTime" */
+    public String getTime() {
+        return startTime + " - " + endTime;
+    }
 }

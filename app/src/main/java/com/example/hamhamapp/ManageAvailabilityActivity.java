@@ -4,15 +4,9 @@ package com.example.hamhamapp;
  * ManageAvailabilityActivity.java
  *
  * Purpose: Allows counselors to manage their available time slots.
- * Counselor selects a date using DatePickerDialog, then adds time
- * slots using TimePickerDialog. Slots can be marked available/
- * unavailable or deleted. Changes are saved to Firestore.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - Save changes not yet functional
- * - SlotAdapter for ListView not yet implemented
- * - Mark available/unavailable toggle not yet implemented
+ * Counselor selects a date (defaults to today), then adds time
+ * slots with start and end times. Supports recurring slots for
+ * selected days over the next 4 weeks.
  */
 
 import android.app.DatePickerDialog;
@@ -20,12 +14,25 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class ManageAvailabilityActivity extends AppCompatActivity {
 
@@ -34,14 +41,19 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
     Button addSlotBtn, cancelBtn, saveChangesBtn;
     ListView slotsListCounselor;
     LinearLayout emptySlots;
+    CheckBox cbMon, cbTue, cbWed, cbThu, cbFri, cbSat, cbSun;
+    
     String email, selectedDate;
+    private FirebaseFirestore db;
+    private CounselorSlotAdapter adapter;
+    private List<TimeSlot> currentSlots;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_availability);
 
-        // get email passed from previous screen
         email = getIntent().getStringExtra("email");
 
         // initialize views
@@ -54,111 +66,173 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         saveChangesBtn = findViewById(R.id.saveChangesBtn);
         slotsListCounselor = findViewById(R.id.slotsListCounselor);
         emptySlots = findViewById(R.id.emptySlots);
+        
+        cbMon = findViewById(R.id.cbMon);
+        cbTue = findViewById(R.id.cbTue);
+        cbWed = findViewById(R.id.cbWed);
+        cbThu = findViewById(R.id.cbThu);
+        cbFri = findViewById(R.id.cbFri);
+        cbSat = findViewById(R.id.cbSat);
+        cbSun = findViewById(R.id.cbSun);
 
-        // back button
+        db = FirebaseFirestore.getInstance();
+        currentSlots = new ArrayList<>();
+        adapter = new CounselorSlotAdapter(this, currentSlots, new CounselorSlotAdapter.OnSlotActionListener() {
+            @Override public void onMarkToggle(TimeSlot slot) { deleteSlot(slot); }
+            @Override public void onDelete(TimeSlot slot) { deleteSlot(slot); }
+        });
+        slotsListCounselor.setAdapter(adapter);
+
+        // Default to today's date
+        Calendar today = Calendar.getInstance();
+        selectedDate = sdf.format(today.getTime());
+        selectedDateText.setText(selectedDate);
+        slotsDateLabel.setText("for " + selectedDate);
+
         backButton.setOnClickListener(v -> finish());
-
-        // cancel button
         cancelBtn.setOnClickListener(v -> finish());
-
-        // date picker — opens calendar dialog
         selectDateBtn.setOnClickListener(v -> showDatePicker());
         selectedDateText.setOnClickListener(v -> showDatePicker());
 
-        // add slot button — opens time picker dialog
         addSlotBtn.setOnClickListener(v -> {
-            if (selectedDate == null) {
-                selectedDateText.setError("Please select a date first");
-                return;
-            }
-            showTimePicker();
+            if (selectedDate == null) return;
+            showStartTimePicker();
         });
 
-        // save changes
-        // TODO: save slots to Firestore
-        saveChangesBtn.setOnClickListener(v -> {
-            // TODO: implement save to Firestore
-            finish();
-        });
+        saveChangesBtn.setOnClickListener(v -> finish());
+
+        loadSlotsForDate(selectedDate);
     }
 
-    /**
-     * Shows Android's built in DatePickerDialog.
-     * Updates selectedDateText and slotsDateLabel with chosen date.
-     */
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // format date as YYYY-MM-DD
-                    selectedDate = selectedYear + "-" +
-                            String.format("%02d", selectedMonth + 1) + "-" +
-                            String.format("%02d", selectedDay);
-
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, day) -> {
+                    Calendar chosen = Calendar.getInstance();
+                    chosen.set(year, month, day);
+                    selectedDate = sdf.format(chosen.getTime());
                     selectedDateText.setText(selectedDate);
                     slotsDateLabel.setText("for " + selectedDate);
-
-                    // TODO: load existing slots for this date from Firestore
                     loadSlotsForDate(selectedDate);
                 },
-                year, month, day
-        );
-
-        // prevent selecting past dates
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
         datePickerDialog.show();
     }
 
-    /**
-     * Shows Android's built in TimePickerDialog.
-     * Adds selected time as a new slot to the list.
-     */
-    private void showTimePicker() {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
-                (view, selectedHour, selectedMinute) -> {
-                    // format time as HH:MM AM/PM
-                    String amPm = selectedHour < 12 ? "AM" : "PM";
-                    int hour12 = selectedHour % 12;
-                    if (hour12 == 0) hour12 = 12;
-                    String time = String.format("%02d:%02d %s", hour12, selectedMinute, amPm);
-
-                    // TODO: add slot to Firestore
-                    addSlotToList(time);
-                },
-                hour, minute, false
-        );
-        timePickerDialog.show();
+    private void showStartTimePicker() {
+        Calendar c = Calendar.getInstance();
+        new TimePickerDialog(this, (view, hour, minute) -> {
+            String startTime = formatTime(hour, minute);
+            showEndTimePicker(startTime);
+        }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
     }
 
-    /**
-     * Loads existing time slots for the selected date.
-     * Currently shows empty state — will load from Firestore later.
-     */
+    private void showEndTimePicker(String startTime) {
+        Calendar c = Calendar.getInstance();
+        new TimePickerDialog(this, (view, hour, minute) -> {
+            String endTime = formatTime(hour, minute);
+            processNewSlot(startTime, endTime);
+        }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
+    }
+
+    private String formatTime(int hour, int minute) {
+        String amPm = hour < 12 ? "AM" : "PM";
+        int hour12 = hour % 12;
+        if (hour12 == 0) hour12 = 12;
+        return String.format(Locale.getDefault(), "%02d:%02d %s", hour12, minute, amPm);
+    }
+
+    private void processNewSlot(String startTime, String endTime) {
+        List<Integer> daysToApply = new ArrayList<>();
+        if (cbMon.isChecked()) daysToApply.add(Calendar.MONDAY);
+        if (cbTue.isChecked()) daysToApply.add(Calendar.TUESDAY);
+        if (cbWed.isChecked()) daysToApply.add(Calendar.WEDNESDAY);
+        if (cbThu.isChecked()) daysToApply.add(Calendar.THURSDAY);
+        if (cbFri.isChecked()) daysToApply.add(Calendar.FRIDAY);
+        if (cbSat.isChecked()) daysToApply.add(Calendar.SATURDAY);
+        if (cbSun.isChecked()) daysToApply.add(Calendar.SUNDAY);
+
+        if (daysToApply.isEmpty()) {
+            addSingleSlot(selectedDate, startTime, endTime);
+        } else {
+            addRecurringSlots(daysToApply, startTime, endTime);
+        }
+    }
+
+    private void addSingleSlot(String date, String start, String end) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        TimeSlot slot = new TimeSlot(null, uid, date, start, end, false);
+        db.collection("availability").add(slot).addOnSuccessListener(ref -> {
+            loadSlotsForDate(selectedDate);
+        });
+    }
+
+    private void addRecurringSlots(List<Integer> days, String start, String end) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        WriteBatch batch = db.batch();
+        
+        for (Integer day : days) {
+            Calendar c = Calendar.getInstance();
+            // Start from today or selected date
+            try {
+                c.setTime(sdf.parse(selectedDate));
+            } catch (Exception e) {}
+
+            for (int week = 0; week < 4; week++) {
+                // Find next occurrence of this day
+                while (c.get(Calendar.DAY_OF_WEEK) != day) {
+                    c.add(Calendar.DATE, 1);
+                }
+                
+                String dateStr = sdf.format(c.getTime());
+                TimeSlot slot = new TimeSlot(null, uid, dateStr, start, end, false);
+                batch.set(db.collection("availability").document(), slot);
+                
+                c.add(Calendar.DATE, 1); // move past this occurrence to find next week's
+            }
+        }
+
+        batch.commit().addOnSuccessListener(unused -> {
+            Toast.makeText(this, "Recurring slots added for next 4 weeks", Toast.LENGTH_SHORT).show();
+            loadSlotsForDate(selectedDate);
+        });
+    }
+
     private void loadSlotsForDate(String date) {
-        // TODO: fetch slots from Firestore for this date
-        // for now show empty state
-        emptySlots.setVisibility(View.VISIBLE);
-        slotsListCounselor.setVisibility(View.GONE);
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db.collection("availability")
+                .whereEqualTo("counselorId", uid)
+                .whereEqualTo("date", date)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    currentSlots.clear();
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        TimeSlot slot = doc.toObject(TimeSlot.class);
+                        slot.setId(doc.getId());
+                        currentSlots.add(slot);
+                    }
+                    updateUI();
+                });
     }
 
-    /**
-     * Adds a new time slot to the list view.
-     * Will be saved to Firestore when save is clicked.
-     */
-    private void addSlotToList(String time) {
-        // TODO: add to adapter and update ListView
-        // TODO: implement SlotAdapter
-        emptySlots.setVisibility(View.GONE);
-        slotsListCounselor.setVisibility(View.VISIBLE);
+    private void deleteSlot(TimeSlot slot) {
+        if (slot.isBooked()) {
+            Toast.makeText(this, "Cannot delete a booked slot", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        db.collection("availability").document(slot.getId()).delete()
+                .addOnSuccessListener(unused -> loadSlotsForDate(selectedDate));
+    }
+
+    private void updateUI() {
+        if (currentSlots.isEmpty()) {
+            emptySlots.setVisibility(View.VISIBLE);
+            slotsListCounselor.setVisibility(View.GONE);
+        } else {
+            emptySlots.setVisibility(View.GONE);
+            slotsListCounselor.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

@@ -85,7 +85,7 @@ public class AuthRepository {
                     data.put("phone",         "");
                     data.put("role",          "student");
                     data.put("noShowCount",   0);
-                    data.put("accountStatus", "active");
+                    data.put("isActive",      true);
 
                     db.collection("users").document(uid)
                             .set(data)
@@ -122,6 +122,8 @@ public class AuthRepository {
                     data.put("phone",         phone);
                     data.put("role",          "counselor");
                     data.put("description",   description);
+                    data.put("isActive",      true);
+                    data.put("rating",        0.0);
                     
                     String[] specs = specialties.split(",");
                     for (int i = 0; i < specs.length; i++) specs[i] = specs[i].trim();
