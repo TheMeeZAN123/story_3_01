@@ -16,22 +16,12 @@ import java.util.List;
  * Purpose: ArrayAdapter for the admin's "Manage Counselors" ListView.
  * Binds a list of Counselor objects to the item_counselor_adming layout,
  * populating name, email, active/inactive status, and specialty tags.
- * Specialty tags are added programmatically because their count varies
- * per counselor. Follows the View layer of the MVC pattern.
- *
- * Outstanding issues: None.
  */
 public class CounselorAdminAdapter extends ArrayAdapter<Counselor> {
 
     private final Context        context;
     private final List<Counselor> counselors;
 
-    /**
-     * Constructs the adapter.
-     *
-     * @param context   Calling Activity context.
-     * @param counselors List of counselors to display.
-     */
     public CounselorAdminAdapter(Context context, List<Counselor> counselors) {
         super(context, R.layout.item_counselor_adming, counselors);
         this.context   = context;
@@ -55,14 +45,21 @@ public class CounselorAdminAdapter extends ArrayAdapter<Counselor> {
         nameView.setText(counselor.getName());
         emailView.setText(counselor.getEmail());
 
-        // status badge — placeholder; Firestore field "accountStatus" would drive this
-        statusView.setText("Active");
+        // Update status badge based on isActive field
+        if (counselor.getIsActive()) {
+            statusView.setText("Active");
+            statusView.setTextColor(context.getResources().getColor(R.color.counselor_green, null));
+            statusView.setBackgroundResource(R.drawable.icon_bg_green);
+        } else {
+            statusView.setText("Inactive");
+            statusView.setTextColor(context.getResources().getColor(R.color.text_gray, null));
+            statusView.setBackgroundResource(R.drawable.icon_bg_gray);
+        }
 
         // clear old tags and rebuild for this counselor
         tagsLayout.removeAllViews();
         List<String> specialties = counselor.getSpecialties();
         if (specialties != null) {
-            // show at most 2 specialty tags to keep rows compact
             int limit = Math.min(specialties.size(), 2);
             for (int i = 0; i < limit; i++) {
                 TextView tag = (TextView) LayoutInflater.from(context)
