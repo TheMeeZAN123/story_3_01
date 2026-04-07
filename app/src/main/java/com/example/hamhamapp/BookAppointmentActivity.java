@@ -2,9 +2,9 @@ package com.example.hamhamapp;
 
 /**
  * BookAppointmentActivity.java
- * Purpose: Displays a selected counselor's profile and available
- * time slots for booking. Student selects a time slot and proceeds
- * to BookingConfirmationActivity.
+ * Purpose: Displays a selected counselor's profile and all
+ * time slots (available and booked) for booking or waitlisting.
+ * Student selects a slot and proceeds to BookingConfirmationActivity.
  */
 
 import android.content.Intent;
@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private TimeSlotAdapter adapter;
-    private List<TimeSlot> availableSlots;
+    private List<TimeSlot> allSlots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +59,8 @@ public class BookAppointmentActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // initialize list and adapter
-        availableSlots = new ArrayList<>();
-        adapter = new TimeSlotAdapter(this, availableSlots);
+        allSlots = new ArrayList<>();
+        adapter = new TimeSlotAdapter(this, allSlots);
         timeSlotsList.setAdapter(adapter);
 
         // back button
@@ -69,10 +68,10 @@ public class BookAppointmentActivity extends AppCompatActivity {
 
         // Load counselor info and slots from Firebase
         loadCounselorInfo();
-        loadAvailableSlots();
+        loadAllSlots();
 
         timeSlotsList.setOnItemClickListener((parent, view, position, id) -> {
-            TimeSlot selectedSlot = availableSlots.get(position);
+            TimeSlot selectedSlot = allSlots.get(position);
             Intent intent = new Intent(BookAppointmentActivity.this, BookingConfirmationActivity.class);
             intent.putExtra("email", email);
             intent.putExtra("counselorId", counselorId);
@@ -80,6 +79,7 @@ public class BookAppointmentActivity extends AppCompatActivity {
             intent.putExtra("selectedDate", selectedSlot.getDate());
             intent.putExtra("selectedTime", selectedSlot.getTime());
             intent.putExtra("slotId", selectedSlot.getId());
+            intent.putExtra("isBooked", selectedSlot.isBooked()); // pass status for waitlist logic
             startActivity(intent);
         });
     }
@@ -102,31 +102,29 @@ public class BookAppointmentActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load counselor info", Toast.LENGTH_SHORT).show());
     }
 
-    private void loadAvailableSlots() {
+    private void loadAllSlots() {
         if (counselorId == null) return;
 
-        // Note: Using a simpler query without multiple orderBys to avoid index requirement for now
-        // We will sort client-side instead.
+        // Fetch all slots for this counselor to show both available and booked (for waitlist)
         db.collection("availability")
                 .whereEqualTo("counselorId", counselorId)
-                .whereEqualTo("isBooked", false)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    availableSlots.clear();
+                    allSlots.clear();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         TimeSlot slot = doc.toObject(TimeSlot.class);
                         slot.setId(doc.getId());
-                        availableSlots.add(slot);
+                        allSlots.add(slot);
                     }
                     
-                    // Sort client-side to avoid "FAILED_PRECONDITION: The query requires an index"
-                    Collections.sort(availableSlots, (s1, s2) -> {
+                    // Sort client-side
+                    Collections.sort(allSlots, (s1, s2) -> {
                         int dateComp = s1.getDate().compareTo(s2.getDate());
                         if (dateComp != 0) return dateComp;
                         return s1.getTime().compareTo(s2.getTime());
                     });
 
-                    if (availableSlots.isEmpty()) {
+                    if (allSlots.isEmpty()) {
                         emptyState.setVisibility(View.VISIBLE);
                         timeSlotsList.setVisibility(View.GONE);
                     } else {
