@@ -39,6 +39,8 @@
         <activity android:name=".AdminEditCounselorActivity"/>
         <activity android:name=".StudentEditProfileActivity"/>
         <activity android:name=".CounselorEditProfileActivity"/>
+        <activity android:name=".CounselorCalendarActivity"/>
+        <activity android:name=".BookingConfirmationActivity"/>
     </application>
 
 </manifest>

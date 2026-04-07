@@ -21,10 +21,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Provides navigation to View Calendar, Manage Availability, Student Records,
  * and My Profile. Logout calls AuthRepository.logout() and clears the
  * Activity back stack.
- *
- * Outstanding issues:
- * - Today's schedule preview not yet loaded from Firestore.
- * - Notification bell not yet implemented.
  */
 public class CounselorDashboardActivity extends AppCompatActivity {
 
@@ -62,8 +58,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CounselorProfileActivity.class)
                         .putExtra("email", email)));
 
+        // Link to the proper Calendar view (3-06)
         cardViewCalendar.setOnClickListener(v ->
-                startActivity(new Intent(this, CounselorMyAppointmentsActivity.class)
+                startActivity(new Intent(this, CounselorCalendarActivity.class)
                         .putExtra("email", email)));
 
         cardManageAvailability.setOnClickListener(v ->
@@ -82,7 +79,6 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CounselorMyAppointmentsActivity.class)
                         .putExtra("email", email)));
 
-        // TODO: connect viewProfileBtn to actual today's-schedule appointment data
         findViewById(R.id.viewProfileBtn).setOnClickListener(v ->
                 startActivity(new Intent(this, StudentProfileCounselorSide.class)
                         .putExtra("email", email)));
@@ -104,11 +100,6 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                 }));
     }
 
-    /**
-     * Fetches the counselor's name and average rating from Firestore and
-     * populates the welcome message and rating display. Falls back gracefully
-     * if the document cannot be read.
-     */
     private void loadCounselorInfo() {
         if (authRepository.getCurrentUser() == null) return;
         FirebaseFirestore.getInstance()
@@ -121,7 +112,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                         Double rating = doc.getDouble("rating");
                         welcomeText.setText("Welcome, Dr. " + (name != null ? name : "") + "!");
                         averageRating.setText(rating != null
-                                ? String.format("%.1f", rating) : "--");
+                                ? String.format("%.1f", rating) : "0.0");
                     }
                 })
                 .addOnFailureListener(e -> welcomeText.setText("Welcome!"));
