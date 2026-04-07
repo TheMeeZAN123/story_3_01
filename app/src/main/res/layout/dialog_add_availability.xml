@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Availability Window"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_dark"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Time"
+        android:textSize="12sp"
+        android:textColor="@color/text_gray"/>
+
+    <Button
+        android:id="@+id/btnStartTime"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="09:00 AM"
+        android:background="@drawable/input_bg"
+        android:layout_marginBottom="12dp"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Time"
+        android:textSize="12sp"
+        android:textColor="@color/text_gray"/>
+
+    <Button
+        android:id="@+id/btnEndTime"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="05:00 PM"
+        android:background="@drawable/input_bg"
+        android:layout_marginBottom="12dp"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Split into slots (minutes)"
+        android:textSize="12sp"
+        android:textColor="@color/text_gray"/>
+
+    <EditText
+        android:id="@+id/etDuration"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="e.g., 30"
+        android:inputType="number"
+        android:background="@drawable/input_bg"
+        android:paddingStart="16dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Create Slots"
+        android:textColor="@color/white"
+        android:background="@drawable/sign_in_bg"/>
+
+</LinearLayout>

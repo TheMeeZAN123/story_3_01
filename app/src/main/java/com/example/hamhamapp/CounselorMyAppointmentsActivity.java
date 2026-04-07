@@ -6,24 +6,26 @@ package com.example.hamhamapp;
  * Purpose: Displays counselor's upcoming and past appointments.
  * Allows switching between upcoming and past tabs.
  * Upcoming appointments can be cancelled or rescheduled.
- * Counselor can view student profile from each appointment card.
- * Shows pending confirmation status for unconfirmed appointments.
- *
- * Outstanding issues:
- * - Firebase Firestore not yet connected
- * - Appointment data is placeholder for UI testing
- * - Cancel and reschedule functionality not yet implemented
- * - Adapters for ListViews not yet implemented
  */
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CounselorMyAppointmentsActivity extends AppCompatActivity {
 
@@ -33,12 +35,15 @@ public class CounselorMyAppointmentsActivity extends AppCompatActivity {
     LinearLayout emptyStateAppointments;
     String email;
 
+    private FirebaseFirestore db;
+    private CounselorAppointmentAdapter upcomingAdapter, pastAdapter;
+    private List<Appointment> upcomingAppts, pastAppts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counselor_my_appointments);
 
-        // get email passed from previous screen
         email = getIntent().getStringExtra("email");
 
         // initialize views
@@ -49,24 +54,79 @@ public class CounselorMyAppointmentsActivity extends AppCompatActivity {
         pastList = findViewById(R.id.pastList);
         emptyStateAppointments = findViewById(R.id.emptyStateAppointments);
 
+        db = FirebaseFirestore.getInstance();
+        upcomingAppts = new ArrayList<>();
+        pastAppts = new ArrayList<>();
+
+        upcomingAdapter = new CounselorAppointmentAdapter(this, upcomingAppts, true);
+        pastAdapter = new CounselorAppointmentAdapter(this, pastAppts, false);
+
+        upcomingList.setAdapter(upcomingAdapter);
+        pastList.setAdapter(pastAdapter);
+
         // back button
         backButton.setOnClickListener(v -> finish());
-
-        // default: show upcoming tab
-        showUpcoming();
 
         // tab switching
         tabUpcoming.setOnClickListener(v -> showUpcoming());
         tabPast.setOnClickListener(v -> showPast());
 
-        // TODO: load upcoming appointments from Firestore
-        // TODO: load past appointments from Firestore
-        // TODO: set up CounselorAppointmentAdapter for both ListViews
+        // default: show upcoming tab
+        showUpcoming();
+        
+        loadAppointments();
+    }
 
+    private void loadAppointments() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        
+        db.collection("appointments")
+                .whereEqualTo("counselorId", uid)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    upcomingAppts.clear();
+                    pastAppts.clear();
+                    long now = System.currentTimeMillis();
+                    
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Appointment appt = doc.toObject(Appointment.class);
+                        appt.setId(doc.getId());
+                        
+                        if (appt.getStatus().equals("cancelled")) continue;
+
+                        if (appt.getTimestamp() >= now) {
+                            upcomingAppts.add(appt);
+                        } else {
+                            pastAppts.add(appt);
+                        }
+                    }
+                    
+                    // Refresh current view
+                    if (upcomingList.getVisibility() == View.VISIBLE) {
+                        refreshListView(upcomingAppts, upcomingList);
+                    } else {
+                        refreshListView(pastAppts, pastList);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreError", "Error loading appointments", e);
+                    Toast.makeText(this, "Failed to load appointments", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void refreshListView(List<Appointment> list, ListView listView) {
+        if (list.isEmpty()) {
+            listView.setVisibility(View.GONE);
+            emptyStateAppointments.setVisibility(View.VISIBLE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            emptyStateAppointments.setVisibility(View.GONE);
+            ((CounselorAppointmentAdapter)listView.getAdapter()).notifyDataSetChanged();
+        }
     }
 
     private void showUpcoming() {
-        // update tab styles
         tabUpcoming.setTextColor(getColor(R.color.primary_blue));
         tabUpcoming.setTypeface(null, android.graphics.Typeface.BOLD);
         tabUpcoming.setBackground(getDrawable(R.drawable.tab_selected));
@@ -74,23 +134,11 @@ public class CounselorMyAppointmentsActivity extends AppCompatActivity {
         tabPast.setTypeface(null, android.graphics.Typeface.NORMAL);
         tabPast.setBackground(null);
 
-        // hide past list always
         pastList.setVisibility(View.GONE);
-
-        // TODO: replace this with actual data check when Firebase connected
-        // for now always show empty state since no data yet
-        boolean hasUpcoming = false; // change to true when data exists
-        if (hasUpcoming) {
-            upcomingList.setVisibility(View.VISIBLE);
-            emptyStateAppointments.setVisibility(View.GONE);
-        } else {
-            upcomingList.setVisibility(View.GONE);
-            emptyStateAppointments.setVisibility(View.VISIBLE);
-        }
+        refreshListView(upcomingAppts, upcomingList);
     }
 
     private void showPast() {
-        // update tab styles
         tabPast.setTextColor(getColor(R.color.primary_blue));
         tabPast.setTypeface(null, android.graphics.Typeface.BOLD);
         tabPast.setBackground(getDrawable(R.drawable.tab_selected));
@@ -98,28 +146,7 @@ public class CounselorMyAppointmentsActivity extends AppCompatActivity {
         tabUpcoming.setTypeface(null, android.graphics.Typeface.NORMAL);
         tabUpcoming.setBackground(null);
 
-        // hide upcoming list always
         upcomingList.setVisibility(View.GONE);
-
-        // TODO: replace this with actual data check when Firebase connected
-        // for now always show empty state since no data yet
-        boolean hasPast = false; // change to true when data exists
-        if (hasPast) {
-            pastList.setVisibility(View.VISIBLE);
-            emptyStateAppointments.setVisibility(View.GONE);
-        } else {
-            pastList.setVisibility(View.GONE);
-            emptyStateAppointments.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void showEmptyState() {
-        emptyStateAppointments.setVisibility(View.VISIBLE);
-        upcomingList.setVisibility(View.GONE);
-        pastList.setVisibility(View.GONE);
-    }
-
-    private void hideEmptyState() {
-        emptyStateAppointments.setVisibility(View.GONE);
+        refreshListView(pastAppts, pastList);
     }
 }
